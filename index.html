@@ -130,6 +130,14 @@
       font-weight: 800;
       color: white;
       text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 12px;
+    }
+    .summary-message {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.4;
+      margin-top: 8px;
     }
     .month-navigation {
       display: flex;
@@ -368,6 +376,7 @@
         <div class="summary-item">
           <div class="summary-label">총 초과근무</div>
           <div class="summary-value" id="overtimeDisplay">00:00</div>
+          <div class="summary-message" id="overtimeMessage">오늘도 화이팅!</div>
         </div>
       </div>
 
@@ -594,6 +603,32 @@
     document.getElementById("totalHoursRow").innerText = `총 근로 시간: ${minutesToTime(totalMinutes)}`;
     const overtimeEl = document.getElementById("overtimeDisplay");
     overtimeEl.textContent = minutesToTime(overtimeMinutes);
+    
+    // 상황별 메시지 설정
+    const messageEl = document.getElementById("overtimeMessage");
+    let message = "";
+    
+    if (overtimeMinutes === 0) {
+      message = "정시퇴근 미쳤고!🎉";
+    } else if (overtimeMinutes > 0 && overtimeMinutes <= 30) {
+      message = "이거 가지고 빨리 퇴근 할 수 없어요! 더 채워주세요💪";
+    } else if (overtimeMinutes > 30 && overtimeMinutes <= 60) {
+      message = "하루는 좀 빨리 퇴근하시죠? 😊";
+    } else if (overtimeMinutes > 60 && overtimeMinutes <= 120) {
+      message = "너무 많이 쌓였다! 빨리 퇴근해요! 🌟";
+    } else if (overtimeMinutes > 120) {
+      message = "4시에 가도 된다 이거는 ㅇㅈ? 🔥";
+    } else if (overtimeMinutes >= -30 && overtimeMinutes < 0) {
+      message = "오늘 조금만 채우고 가시죠? 💪";
+    } else if (overtimeMinutes >= -60 && overtimeMinutes < -30) {
+      message = "살짝 위기 올 것 같은뎁..? 🤔";
+    } else if (overtimeMinutes >= -120 && overtimeMinutes < -60) {
+      message = "이건 좀... 비상!!!!!!🪫";
+    } else if (overtimeMinutes < -120) {
+      message = "오늘 집에 못들어간다고 연락하세요 ㅎ..⌚";
+    }
+    
+    messageEl.textContent = message;
   }
 
   function saveData() {
