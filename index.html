@@ -118,7 +118,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
-      min-height: 140px;
+      height: 164px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -453,7 +453,7 @@
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.innerHTML = `
-      <span style="font-size: 20px;">${type === 'success' ? '✓' : '⚠'}</span>
+      <span style="font-size: 20px;">${type === 'success' ? '✔' : '⚠'}</span>
       <span>${message}</span>
     `;
     document.body.appendChild(toast);
@@ -628,7 +628,7 @@
     } else if (overtimeMinutes >= -30 && overtimeMinutes < 0) {
       message = "오늘 조금만 채우고 가시죠? 💪";
     } else if (overtimeMinutes >= -60 && overtimeMinutes < -30) {
-      message = "살짝 위기 올 것 같은뎁..? 🤔";
+      message = "살짝 위기 올 것 같은뎅..? 🤔";
     } else if (overtimeMinutes >= -120 && overtimeMinutes < -60) {
       message = "이건 좀... 비상!!!!!!🪫";
     } else if (overtimeMinutes < -120) {
