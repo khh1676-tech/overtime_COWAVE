@@ -314,7 +314,7 @@
       border-bottom: 1px solid #f7fafc;
       font-size: 14px;
     }
-    .work-table tr:hover { background: #f7fafc; }
+    .work-table tbody tr:hover { background: #f7fafc; }
     .work-input {
       width: 90px;
       padding: 8px 12px;
@@ -868,16 +868,43 @@
       };
       
       const storageKey = `overtime_${currentUser}_${currentYear}_${currentMonth}`;
-      const result = await window.storage.set(storageKey, JSON.stringify(data), true);
       
-      if (result) {
-        showToast('클라우드에 저장되었습니다!', 'success');
+      // window.storage가 없으면 localStorage 사용
+      if (typeof window.storage !== 'undefined') {
+        const result = await window.storage.set(storageKey, JSON.stringify(data), true);
+        if (result) {
+          showToast('클라우드에 저장되었습니다!', 'success');
+        } else {
+          showToast('저장 중 오류가 발생했습니다', 'error');
+        }
       } else {
-        showToast('저장 중 오류가 발생했습니다', 'error');
+        // fallback to localStorage
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        showToast('로컬에 저장되었습니다!', 'success');
       }
     } catch (error) {
       console.error('Save error:', error);
-      showToast('저장 중 오류가 발생했습니다', 'error');
+      // localStorage로 fallback
+      try {
+        const storageKey = `overtime_${currentUser}_${currentYear}_${currentMonth}`;
+        const data = { 
+          year: currentYear, 
+          month: currentMonth, 
+          rows: []
+        };
+        document.querySelectorAll("#workTable tbody tr").forEach(tr => {
+          data.rows.push({
+            date: tr.children[0].textContent,
+            weekday: tr.children[1].textContent,
+            hours: tr.children[2].querySelector("input").value,
+            type: tr.children[3].querySelector("select").value
+          });
+        });
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        showToast('로컬에 저장되었습니다!', 'success');
+      } catch (e) {
+        showToast('저장 중 오류가 발생했습니다', 'error');
+      }
     }
   }
 
@@ -894,15 +921,34 @@
   async function loadDataFromCloud() {
     try {
       const storageKey = `overtime_${currentUser}_${currentYear}_${currentMonth}`;
-      const result = await window.storage.get(storageKey, true);
       
-      if (!result || !result.value) {
+      // window.storage가 있으면 클라우드에서, 없으면 localStorage에서
+      let data = null;
+      
+      if (typeof window.storage !== 'undefined') {
+        try {
+          const result = await window.storage.get(storageKey, true);
+          if (result && result.value) {
+            data = JSON.parse(result.value);
+          }
+        } catch (e) {
+          console.log('Cloud storage not available, trying localStorage');
+        }
+      }
+      
+      // fallback to localStorage
+      if (!data) {
+        const localData = localStorage.getItem(storageKey);
+        if (localData) {
+          data = JSON.parse(localData);
+        }
+      }
+      
+      if (!data || !data.rows) {
         showToast("저장된 데이터가 없습니다. 새로 시작합니다.", "error");
         initializeCurrentMonth();
         return;
       }
-      
-      const data = JSON.parse(result.value);
       
       if (data.year && data.month) {
         currentYear = data.year;
