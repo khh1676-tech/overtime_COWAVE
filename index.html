@@ -8,12 +8,21 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
       min-height: 100vh;
       padding: 20px;
       color: #1a202c;
     }
     .container { max-width: 1200px; margin: 0 auto; }
+    .page-title {
+      text-align: center;
+      font-size: 48px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 32px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      letter-spacing: -1px;
+    }
     .header {
       background: white;
       border-radius: 16px;
@@ -25,7 +34,7 @@
     .header h1 { 
       font-size: 32px; 
       font-weight: 800; 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -34,8 +43,14 @@
     .header p { color: #718096; font-size: 14px; }
     .main-grid { 
       display: grid; 
-      grid-template-columns: 1fr 2fr; 
+      grid-template-columns: 1fr; 
       gap: 24px; 
+    }
+    .top-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
     }
     .card {
       background: white;
@@ -55,7 +70,7 @@
     .icon {
       width: 40px;
       height: 40px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -98,11 +113,11 @@
       font-weight: 600;
     }
     .summary-item {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
       padding: 24px;
       border-radius: 12px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
     }
     .summary-label { 
       font-size: 14px; 
@@ -120,34 +135,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 0;
     }
     .month-navigation button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #f7fafc;
-      border: 2px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 18px;
-    }
-    .month-navigation button:hover {
-      background: #667eea;
-      border-color: #667eea;
-      color: white;
-      transform: scale(1.1);
+      display: none;
     }
     .month-display {
-      font-size: 18px;
+      font-size: 24px;
       font-weight: 700;
       color: #2d3748;
-      min-width: 140px;
+      width: 100%;
       text-align: center;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 199, 60, 0.1) 100%);
+      border-radius: 12px;
+      border: 2px solid rgba(0, 102, 255, 0.3);
     }
     .table-container { overflow-x: auto; }
     .work-table { width: 100%; border-collapse: collapse; }
@@ -181,8 +183,8 @@
     }
     .work-input:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #0066FF;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
     }
     .work-input:disabled {
       background: #edf2f7;
@@ -201,8 +203,8 @@
     }
     select:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #0066FF;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
     }
     .row-annual-leave { background-color: #fef3c7 !important; }
     .row-annual-leave input { background-color: #fde68a !important; }
@@ -211,8 +213,8 @@
     .row-holiday { background-color: #fecaca !important; }
     .row-holiday input { background-color: #fca5a5 !important; }
     .total-row {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-top: 3px solid #667eea;
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
+      border-top: 3px solid #0066FF;
     }
     .total-row td { 
       font-weight: 800; 
@@ -237,13 +239,13 @@
       letter-spacing: 0.5px;
     }
     button.primary { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0066FF 0%, #00C73C 100%);
       color: white;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
     }
     button.primary:hover { 
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      box-shadow: 0 6px 20px rgba(0, 102, 255, 0.6);
     }
     button.secondary { 
       background: #f7fafc; 
@@ -254,54 +256,56 @@
       background: #edf2f7;
       border-color: #cbd5e0;
     }
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .footer p {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a5568;
+    }
     @media (max-width: 1024px) { 
       .main-grid { grid-template-columns: 1fr; }
+      .top-section { grid-template-columns: 1fr; }
       .header h1 { font-size: 24px; }
+      .page-title { font-size: 36px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>📊 초과근무 계산기</h1>
-      <p>매월 근무시간을 쉽게 관리하세요</p>
-    </div>
+    <h1 class="page-title">초과근무 계산기</h1>
 
-    <div class="main-grid">
-      <div class="left-panel">
-        <div class="card">
-          <div class="card-header">
-            <div class="icon">📈</div>
-            <h2>월간 요약</h2>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">총 초과근무</div>
-            <div class="summary-value" id="overtimeDisplay">00:00</div>
-          </div>
+    <div class="top-section">
+      <div class="card">
+        <div class="card-header">
+          <div class="icon">📈</div>
+          <h2>월간 요약</h2>
         </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <div class="icon">⚙️</div>
-            <h2>설정</h2>
-          </div>
-          <div class="input-group">
-            <label for="minWorkHours">월 기준 근무시간</label>
-            <div class="input-container">
-              <input type="number" id="minWorkHours" value="184" oninput="calculate()">
-              <span class="input-unit">시간</span>
-            </div>
-          </div>
-          <div class="month-navigation">
-            <button onclick="changeMonth(-1)">◀</button>
-            <span class="month-display" id="monthDisplay">2025년 7월</span>
-            <button onclick="changeMonth(1)">▶</button>
-          </div>
+        <div class="summary-item">
+          <div class="summary-label">총 초과근무</div>
+          <div class="summary-value" id="overtimeDisplay">00:00</div>
         </div>
       </div>
 
-      <div class="right-panel">
-        <div class="card">
+      <div class="card">
+        <div class="card-header">
+          <div class="icon">📅</div>
+          <h2>현재 월</h2>
+        </div>
+        <div class="month-navigation">
+          <span class="month-display" id="monthDisplay">2025년 12월</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
           <div class="card-header">
             <div class="icon">📅</div>
             <h2>일별 근무 기록</h2>
@@ -332,12 +336,25 @@
         </div>
       </div>
     </div>
+
+    <div class="footer">
+      <p>문의사항 👉 마케팅전략팀 김환희</p>
+    </div>
   </div>
 
 <script>
   const weekdayKo = ["일","월","화","수","목","금","토"];
   let currentYear = new Date().getFullYear();
   let currentMonth = new Date().getMonth() + 1;
+  
+  // 페이지 로드시 현재 월로 자동 설정
+  function initializeCurrentMonth() {
+    const now = new Date();
+    currentYear = now.getFullYear();
+    currentMonth = now.getMonth() + 1;
+    updateMonthDisplay();
+    generateMonth(currentYear, currentMonth);
+  }
   
   function getKoreanHolidays(year) {
     const holidays = [];
@@ -536,8 +553,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    updateMonthDisplay();
-    generateMonth(currentYear, currentMonth);
+    initializeCurrentMonth();
   });
 </script>
 </body>
