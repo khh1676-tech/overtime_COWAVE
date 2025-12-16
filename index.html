@@ -271,6 +271,53 @@
       font-weight: 600;
       color: #4a5568;
     }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      z-index: 9999;
+      animation: slideIn 0.3s ease-out;
+    }
+    .toast.success {
+      border-left: 4px solid #00C73C;
+      color: #00C73C;
+    }
+    .toast.error {
+      border-left: 4px solid #ef4444;
+      color: #ef4444;
+    }
+    .toast.hide {
+      animation: slideOut 0.3s ease-out forwards;
+    }
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+    }
     @media (max-width: 1024px) { 
       .main-grid { grid-template-columns: 1fr; }
       .top-section { grid-template-columns: 1fr; }
@@ -278,6 +325,33 @@
       .page-title { font-size: 36px; margin-bottom: 24px; }
       body { padding: 16px 16px 60px 16px; }
       .footer { margin-bottom: 40px; }
+      .toast {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        top: 20px;
+        max-width: 90%;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(-50%) translateY(-100px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(-50%) translateY(-100px);
+          opacity: 0;
+        }
+      }
     }
   </style>
 </head>
@@ -351,6 +425,28 @@
   const weekdayKo = ["일","월","화","수","목","금","토"];
   let currentYear = new Date().getFullYear();
   let currentMonth = new Date().getMonth() + 1;
+  
+  // 토스트 메시지 표시 함수
+  function showToast(message, type = 'success') {
+    // 기존 토스트 제거
+    const existingToast = document.querySelector('.toast');
+    if (existingToast) {
+      existingToast.remove();
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <span style="font-size: 20px;">${type === 'success' ? '✓' : '⚠'}</span>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }
   
   // 페이지 로드시 현재 월로 자동 설정
   function initializeCurrentMonth() {
