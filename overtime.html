@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>초과근무 계산기</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #1a202c;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 32px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .header h1 { 
+      font-size: 32px; 
+      font-weight: 800; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .header p { color: #718096; font-size: 14px; }
+    .main-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 2fr; 
+      gap: 24px; 
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f7fafc;
+    }
+    .icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .card-header h2 { font-size: 20px; font-weight: 700; color: #2d3748; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+    }
+    .input-container { position: relative; }
+    .input-container input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .input-container input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .input-unit {
+      position: absolute;
+      right: 16px;
+      top: 14px;
+      color: #a0aec0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .summary-item {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    .summary-label { 
+      font-size: 14px; 
+      font-weight: 600; 
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 8px;
+    }
+    .summary-value {
+      font-size: 36px; 
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .month-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .month-navigation button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 18px;
+    }
+    .month-navigation button:hover {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+      transform: scale(1.1);
+    }
+    .month-display {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2d3748;
+      min-width: 140px;
+      text-align: center;
+    }
+    .table-container { overflow-x: auto; }
+    .work-table { width: 100%; border-collapse: collapse; }
+    .work-table th {
+      background: #f7fafc;
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #4a5568;
+      border-bottom: 2px solid #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .work-table td {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid #f7fafc;
+      font-size: 14px;
+    }
+    .work-table tr:hover { background: #f7fafc; }
+    .work-input {
+      width: 90px;
+      padding: 8px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .work-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .work-input:disabled {
+      background: #edf2f7;
+      color: #a0aec0;
+      cursor: not-allowed;
+    }
+    select {
+      padding: 8px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: white;
+      transition: all 0.3s;
+    }
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .row-annual-leave { background-color: #fef3c7 !important; }
+    .row-annual-leave input { background-color: #fde68a !important; }
+    .row-work-from-home { background-color: #dbeafe !important; }
+    .row-work-from-home input { background-color: #93c5fd !important; }
+    .row-holiday { background-color: #fecaca !important; }
+    .row-holiday input { background-color: #fca5a5 !important; }
+    .total-row {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-top: 3px solid #667eea;
+    }
+    .total-row td { 
+      font-weight: 800; 
+      padding: 16px;
+      color: white;
+      font-size: 16px;
+    }
+    .controls { 
+      display: flex; 
+      gap: 12px; 
+      margin-bottom: 16px; 
+      flex-wrap: wrap; 
+    }
+    button {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.3s;
+      letter-spacing: 0.5px;
+    }
+    button.primary { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    button.primary:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    button.secondary { 
+      background: #f7fafc; 
+      color: #4a5568;
+      border: 2px solid #e2e8f0;
+    }
+    button.secondary:hover { 
+      background: #edf2f7;
+      border-color: #cbd5e0;
+    }
+    @media (max-width: 1024px) { 
+      .main-grid { grid-template-columns: 1fr; }
+      .header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 초과근무 계산기</h1>
+      <p>매월 근무시간을 쉽게 관리하세요</p>
+    </div>
+
+    <div class="main-grid">
+      <div class="left-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon">📈</div>
+            <h2>월간 요약</h2>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">총 초과근무</div>
+            <div class="summary-value" id="overtimeDisplay">00:00</div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <div class="icon">⚙️</div>
+            <h2>설정</h2>
+          </div>
+          <div class="input-group">
+            <label for="minWorkHours">월 기준 근무시간</label>
+            <div class="input-container">
+              <input type="number" id="minWorkHours" value="184" oninput="calculate()">
+              <span class="input-unit">시간</span>
+            </div>
+          </div>
+          <div class="month-navigation">
+            <button onclick="changeMonth(-1)">◀</button>
+            <span class="month-display" id="monthDisplay">2025년 7월</span>
+            <button onclick="changeMonth(1)">▶</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="card">
+          <div class="card-header">
+            <div class="icon">📅</div>
+            <h2>일별 근무 기록</h2>
+          </div>
+          <div class="controls">
+            <button class="primary" onclick="saveData()">💾 저장</button>
+            <button class="secondary" onclick="loadData()">📂 불러오기</button>
+            <button class="secondary" onclick="clearTable()">🗑️ 초기화</button>
+          </div>
+          <div class="table-container">
+            <table class="work-table" id="workTable">
+              <thead>
+                <tr>
+                  <th>날짜</th>
+                  <th>요일</th>
+                  <th>근로시간</th>
+                  <th>근무형태</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+              <tfoot>
+                <tr class="total-row">
+                  <td colspan="4" id="totalHoursRow">총 근로 시간: 00:00</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const weekdayKo = ["일","월","화","수","목","금","토"];
+  let currentYear = new Date().getFullYear();
+  let currentMonth = new Date().getMonth() + 1;
+  
+  function getKoreanHolidays(year) {
+    const holidays = [];
+    holidays.push(`${year}-01-01`);
+    holidays.push(`${year}-03-01`);
+    holidays.push(`${year}-05-05`);
+    holidays.push(`${year}-06-06`);
+    holidays.push(`${year}-08-15`);
+    holidays.push(`${year}-10-03`);
+    holidays.push(`${year}-10-09`);
+    holidays.push(`${year}-12-25`);
+    
+    if (year === 2025) {
+      holidays.push('2025-01-28','2025-01-29','2025-01-30');
+      holidays.push('2025-05-05');
+      holidays.push('2025-10-05','2025-10-06','2025-10-07','2025-10-08');
+    }
+    return holidays;
+  }
+  
+  function isHoliday(year, month, day) {
+    const dateStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    return getKoreanHolidays(year).includes(dateStr);
+  }
+  
+  function updateMonthDisplay() {
+    document.getElementById('monthDisplay').textContent = `${currentYear}년 ${currentMonth}월`;
+  }
+  
+  function changeMonth(direction) {
+    currentMonth += direction;
+    if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+    else if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+    updateMonthDisplay();
+    generateMonth(currentYear, currentMonth);
+  }
+
+  function generateMonth(year, month) {
+    const tbody = document.querySelector("#workTable tbody");
+    tbody.innerHTML = "";
+    const lastDay = new Date(year, month, 0).getDate();
+
+    for (let d = 1; d <= lastDay; d++) {
+      const dateObj = new Date(year, month - 1, d);
+      const day = dateObj.getDay();
+      if (day === 0 || day === 6 || isHoliday(year, month, d)) continue;
+
+      const mmdd = String(month).padStart(2,"0") + "-" + String(d).padStart(2,"0");
+      const tr = document.createElement("tr");
+      const isFriday = day === 5;
+      const hoursVal = "08:00";
+      const typeVal = isFriday ? "재택(금)" : "정상";
+
+      tr.innerHTML = `
+        <td>${mmdd}</td>
+        <td>${weekdayKo[day]}</td>
+        <td><input type="text" class="work-input" value="${hoursVal}" ${isFriday ? "readonly" : ""}></td>
+        <td>
+          <select>
+            <option ${typeVal==='정상'?'selected':''}>정상</option>
+            <option ${typeVal==='연차'?'selected':''}>연차</option>
+            <option ${typeVal==='재택(금)'?'selected':''}>재택(금)</option>
+            <option ${typeVal==='휴일'?'selected':''}>휴일</option>
+          </select>
+        </td>`;
+
+      const input = tr.querySelector("input");
+      const select = tr.querySelector("select");
+      input.addEventListener("blur", e => { e.target.value = normalizeTime(e.target.value); calculate(); });
+      input.addEventListener("input", () => calculate());
+      select.addEventListener("change", () => updateType(tr));
+      tbody.appendChild(tr);
+      updateType(tr);
+    }
+    calculate();
+  }
+
+  function updateType(tr) {
+    const select = tr.querySelector("select");
+    const input = tr.querySelector("input");
+    const type = select.value;
+    tr.classList.remove('row-annual-leave','row-work-from-home','row-holiday');
+
+    if (type === "연차") {
+      input.value = "08:00";
+      input.setAttribute("readonly", true);
+      tr.classList.add('row-annual-leave');
+    } else if (type === "재택(금)") {
+      input.value = "08:00";
+      input.setAttribute("readonly", true);
+      tr.classList.add('row-work-from-home');
+    } else if (type === "휴일") {
+      input.value = "00:00";
+      input.setAttribute("readonly", true);
+      tr.classList.add('row-holiday');
+    } else {
+      input.removeAttribute("readonly");
+    }
+    calculate();
+  }
+
+  function normalizeTime(val) {
+    if (!val) return "00:00";
+    val = val.replace(/[^0-9]/g,"");
+    if (val.length <= 2) return val.padStart(2,"0") + ":00";
+    if (val.length === 3) return val.slice(0,1).padStart(2,"0") + ":" + val.slice(1).padStart(2,"0");
+    return val.slice(0,-2).padStart(2,"0") + ":" + val.slice(-2);
+  }
+
+  function timeToMinutes(timeStr) {
+    if (!timeStr || !timeStr.includes(":")) return 0;
+    const [h,m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  function minutesToTime(minutes) {
+    const sign = minutes < 0 ? "-" : "";
+    const abs = Math.abs(minutes);
+    const h = Math.floor(abs / 60);
+    const m = abs % 60;
+    return `${sign}${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+  }
+
+  function calculate() {
+    let totalMinutes = 0;
+    let overtimeMinutes = 0;
+
+    document.querySelectorAll("#workTable tbody tr").forEach(tr => {
+      const type = tr.querySelector("select").value;
+      if (type === "휴일") return;
+      const minutes = timeToMinutes(tr.children[2].querySelector("input").value);
+      totalMinutes += minutes;
+      overtimeMinutes += (minutes - 480);
+    });
+
+    document.getElementById("totalHoursRow").innerText = `총 근로 시간: ${minutesToTime(totalMinutes)}`;
+    const overtimeEl = document.getElementById("overtimeDisplay");
+    overtimeEl.textContent = minutesToTime(overtimeMinutes);
+  }
+
+  function saveData() {
+    const rows = [];
+    document.querySelectorAll("#workTable tbody tr").forEach(tr => {
+      rows.push({
+        date: tr.children[0].textContent,
+        weekday: tr.children[1].textContent,
+        hours: tr.children[2].querySelector("input").value,
+        type: tr.children[3].querySelector("select").value
+      });
+    });
+    const data = { minWorkHours: document.getElementById("minWorkHours").value, year: currentYear, month: currentMonth, rows };
+    localStorage.setItem("overtimeDataV7", JSON.stringify(data));
+    alert("저장되었습니다!");
+  }
+
+  function loadData() {
+    const data = JSON.parse(localStorage.getItem("overtimeDataV7") || "{}");
+    if (!data.rows) { alert("저장된 데이터가 없습니다."); return; }
+    document.getElementById("minWorkHours").value = data.minWorkHours || 184;
+    if (data.year && data.month) {
+      currentYear = data.year;
+      currentMonth = data.month;
+      updateMonthDisplay();
+    }
+    const tbody = document.querySelector("#workTable tbody");
+    tbody.innerHTML = "";
+    data.rows.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td>${row.weekday}</td>
+        <td><input type="text" class="work-input" value="${row.hours}"></td>
+        <td>
+          <select>
+            <option ${row.type==='정상'?'selected':''}>정상</option>
+            <option ${row.type==='연차'?'selected':''}>연차</option>
+            <option ${row.type==='재택(금)'?'selected':''}>재택(금)</option>
+            <option ${row.type==='휴일'?'selected':''}>휴일</option>
+          </select>
+        </td>`;
+      const input = tr.querySelector("input");
+      const select = tr.querySelector("select");
+      input.addEventListener("blur", e => { e.target.value = normalizeTime(e.target.value); calculate(); });
+      input.addEventListener("input", () => calculate());
+      select.addEventListener("change", () => updateType(tr));
+      tbody.appendChild(tr);
+      updateType(tr);
+    });
+    calculate();
+  }
+
+  function clearTable() {
+    if (confirm("정말 초기화하시겠습니까?")) {
+      generateMonth(currentYear, currentMonth);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    updateMonthDisplay();
+    generateMonth(currentYear, currentMonth);
+  });
+</script>
+</body>
+</html>
