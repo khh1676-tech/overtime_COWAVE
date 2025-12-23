@@ -881,6 +881,15 @@
     const overtimeEl = document.getElementById("overtimeDisplay");
     overtimeEl.textContent = minutesToTime(overtimeMinutes);
     
+    // 마이너스면 빨간색으로 표시
+    if (overtimeMinutes < 0) {
+      overtimeEl.style.color = '#ff4444';
+      overtimeEl.parentElement.style.background = 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
+    } else {
+      overtimeEl.style.color = 'white';
+      overtimeEl.parentElement.style.background = 'linear-gradient(135deg, #0066FF 0%, #00C73C 100%)';
+    }
+    
     const messageEl = document.getElementById("overtimeMessage");
     let message = "";
     
